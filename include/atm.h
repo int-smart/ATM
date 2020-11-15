@@ -3,7 +3,6 @@
 #include <iostream>
 class ATM {
 private:
-  bool isPinCorrect();
   Bank* my_bank;
 
 public:
