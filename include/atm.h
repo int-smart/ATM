@@ -10,6 +10,9 @@ public:
   ATM() {
     my_bank = new Bank();
   };
+  ~ATM() {
+    delete my_bank;
+  }
   void run();
   int readAccountNumber() {
     // API given by ATM
@@ -46,7 +49,7 @@ void ATM::run() {
         // If yes ask for pin
         pin = getPin();
 
-        if (customer_acc->validPin(pin)) {
+        if (my_bank->isValidPin(pin, customer_acc)) {
           bool isSavings = false;
           // Select Account type as in Savings or Checkings
           std::cout << "Insert Account type (0 or 1) : Checkings:0, Savings:1";
