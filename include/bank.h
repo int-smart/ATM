@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+
+/*
+  Transaction class
+*/
 class Transaction {
 private:
   uint64_t amount;
@@ -14,9 +18,17 @@ private:
 public:
   Transaction(uint64_t amount, bool type, uint64_t atm_id = 5)
     : amount(amount), type(type), atm_id(atm_id){};
+
+  /*
+  This function gets transaction amount
+  */
   uint64_t getAmount() {
     return amount;
   }
+
+  /*
+  This function gets transaction type
+  */
   bool getType() {
     return type;
   }
@@ -24,6 +36,7 @@ public:
 
 class BankAccount {
 private:
+  // Data
   uint64_t account_no;
   uint16_t pin_no;
   uint64_t balance;
@@ -43,18 +56,35 @@ public:
     account_no = new_account_no;
     pin_no = 1234;
   };
+
+  /*
+  This function gets balance amount
+  */
   uint64_t getBalance() {
     return balance;
   };
-  void updateTransaction(Transaction* transaction) {
+  /*
+  Given a transaction this function applies the transaction and updates balance
+  amount
+  */
+  bool updateTransaction(Transaction* transaction) {
     if (transaction->getType()) {
-      balance = balance - transaction->getAmount();
+      if (balance >= transaction->getAmount()) {
+        balance = balance - transaction->getAmount();
+      } else {
+        std::cout << "Not enough Balance for this withdrawal." << std::endl;
+        return false;
+      }
     } else {
       balance = balance + transaction->getAmount();
     }
     transactions.push_back(transaction);
+    return true;
   };
 
+  /*
+  This function checks if pin is valid
+  */
   bool validPin(uint16_t pin) {
     return (pin == pin_no);
   }
@@ -70,6 +100,10 @@ private:
 
 public:
   Bank() : total_customers(0), name("ABCD"), address(""){};
+
+  /*
+  This function adds customers
+  */
   void addCustomer(std::string name) {
     // Generate Unique account no
     uint64_t new_account = total_customers;
@@ -88,10 +122,16 @@ public:
 
   void removeCustomer(){};
 
+  /*
+  This function applies transaction to a particular bank account
+  */
   void updateBalance(BankAccount* indiv, Transaction* trans) {
     indiv->updateTransaction(trans);
   };
 
+  /*
+  This function checks validity of bank account
+  */
   BankAccount* isValidBankAccount(uint64_t read_account) {
     if (customers.find(read_account) != customers.end()) {
       return customers[read_account];
@@ -100,6 +140,9 @@ public:
     }
   };
 
+  /*
+  This function checks if given pin is the pin of given account
+  */
   bool isValidPin(uint64_t pin, BankAccount* account) {
     return account->validPin(pin);
   }
